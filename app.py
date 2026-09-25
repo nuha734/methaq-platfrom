@@ -51,7 +51,7 @@ with tab1:
     store_url = st.text_input("رابط المتجر الإلكتروني:", placeholder="https://example.com")
 
 with tab2:
-    policy_text = st.text_area("نص سياسة الخصوصية أو الشروط والأحكام:", height=150, placeholder="انسخي نص السياسة هنا...")
+    policy_text = st.text_area("نص سياسة الخصوصية والشروط والأحكام:", height=150, placeholder="انسخي نص السياسة هنا...")
 
 analyze_btn = st.button("🔍 ابدأ الفحص الآن", type="primary", use_container_width=True)
 
