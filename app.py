@@ -5,25 +5,16 @@ import time
 st.set_page_config(
     page_title="منصة ميثاق - التدقيق والامتثال الرقمي",
     page_icon="⚖️",
-    layout="wide",
-    initial_sidebar_state="expanded"
+    layout="wide"
 )
 
-# حقن كود لفرض اتجاه اللغة العربية على مستوى المستند بالكامل (HTML Tag Injection) ومتصفحات الجوال
+# كود CSS أساسي لتنظيف واجهة العرض وتثبيت الاتجاه
 st.markdown("""
-    <script>
-        var doc = window.parent.document;
-        doc.documentElement.setAttribute('lang', 'ar');
-        doc.documentElement.setAttribute('dir', 'rtl');
-    </script>
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap');
     
-    html, body, [class*="css"], .stMarkdown, p, span, div, h1, h2, h3, h4, h5, h6 {
+    html, body, [class*="css"] {
         font-family: 'Tajawal', sans-serif !important;
-        direction: rtl !important;
-        text-align: right !important;
-        unicode-bidi: normal !important;
     }
     
     .main-header {
@@ -34,43 +25,29 @@ st.markdown("""
         text-align: center;
         margin-bottom: 20px;
         box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        direction: rtl !important;
-    }
-    
-    .main-header h1, .main-header p {
-        color: white !important;
-        direction: rtl !important;
-        unicode-bidi: normal !important;
-        text-align: center !important;
-    }
-
-    .stTextInput input, .stTextArea textarea {
-        direction: rtl !important;
-        text-align: right !important;
-    }
-    
-    /* إصلاح محاذاة التبويبات في الجوال */
-    .stTabs [data-baseweb="tab-list"] {
-        direction: rtl !important;
-        justify-content: flex-start;
     }
     </style>
 """, unsafe_allow_html=True)
 
+# استخدام هيكل HTML صريح يمنع انعكاس الحروف على الجوال تماماً
 st.markdown("""
     <div class="main-header">
-        <h1 style="direction: rtl; unicode-bidi: normal;">منصة ميثاق الرقمية</h1>
-        <p style="direction: rtl; unicode-bidi: normal;">المنصة الذكية للتدقيق القانوني والامتثال للأنظمة السعودية</p>
+        <h1 style="color: white; direction: rtl; text-align: center; font-family: 'Tajawal', sans-serif; margin: 0;">منصة ميثاق الرقمية</h1>
+        <p style="color: white; direction: rtl; text-align: center; font-family: 'Tajawal', sans-serif; margin-top: 10px;">المنصة الذكية للتدقيق القانوني والامتثال للأنظمة السعودية</p>
     </div>
 """, unsafe_allow_html=True)
 
 with st.sidebar:
+    st.markdown('<div style="direction: rtl; text-align: right; font-family: \'Tajawal\', sans-serif;">', unsafe_allow_html=True)
     st.header("حول المنصة")
     st.info("ميثاق هي أداة ذكاء اصطناعي تفحص المتاجر والمنشآت للتأكد من مطابقتها للأنظمة واللوائح السعودية وتجنب الغرامات.")
     st.markdown("---")
     st.caption("مشارك في مسابقة أكاديمية طويق (SAIF)")
+    st.markdown('</div>', unsafe_allow_html=True)
 
+st.markdown('<div style="direction: rtl; text-align: right; font-family: \'Tajawal\', sans-serif;">', unsafe_allow_html=True)
 st.subheader("ادخلي بيانات المتجر أو سياسة الخصوصية للفحص")
+st.markdown('</div>', unsafe_allow_html=True)
 
 tab1, tab2 = st.tabs(["فحص عبر رابط المتجر", "فحص نص السياسة مباشرة"])
 
@@ -78,10 +55,14 @@ store_url = ""
 policy_text = ""
 
 with tab1:
+    st.markdown('<div style="direction: rtl; text-align: right;">', unsafe_allow_html=True)
     store_url = st.text_input("رابط المتجر الإلكتروني:", placeholder="https://example.com")
+    st.markdown('</div>', unsafe_allow_html=True)
 
 with tab2:
+    st.markdown('<div style="direction: rtl; text-align: right;">', unsafe_allow_html=True)
     policy_text = st.text_area("نص سياسة الخصوصية أو الشروط والأحكام:", height=130, placeholder="انسخي نص السياسة هنا...")
+    st.markdown('</div>', unsafe_allow_html=True)
 
 analyze_btn = st.button("ابدأ الفحص القانوني الآن", type="primary", use_container_width=True)
 
@@ -116,6 +97,7 @@ if analyze_btn:
             st.metric(label="مخالفات", value=len(failed_items))
 
         st.markdown("---")
+        st.markdown('<div style="direction: rtl; text-align: right;">', unsafe_allow_html=True)
         st.subheader("البنود المكتملة")
         for item in passed_items:
             st.success(item)
@@ -128,3 +110,4 @@ if analyze_btn:
         st.subheader("التوليد الآلي للحلول")
         with st.expander("عرض البند القانوني المولد وتطبيقه"):
             st.markdown(generated_fix)
+        st.markdown('</div>', unsafe_allow_html=True)
