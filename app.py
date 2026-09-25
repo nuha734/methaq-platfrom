@@ -5,28 +5,25 @@ import time
 st.set_page_config(
     page_title="منصة ميثاق - التدقيق والامتثال الرقمي",
     page_icon="⚖️",
-    layout="wide"
+    layout="wide",
+    initial_sidebar_state="expanded"
 )
 
-# كود CSS دقيق لضبط الاتجاه العربي وحل مشكلة انعكاس الحروف على الجوال
+# حقن كود لفرض اتجاه اللغة العربية على مستوى المستند بالكامل (HTML Tag Injection) ومتصفحات الجوال
 st.markdown("""
+    <script>
+        var doc = window.parent.document;
+        doc.documentElement.setAttribute('lang', 'ar');
+        doc.documentElement.setAttribute('dir', 'rtl');
+    </script>
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap');
     
-    * {
+    html, body, [class*="css"], .stMarkdown, p, span, div, h1, h2, h3, h4, h5, h6 {
         font-family: 'Tajawal', sans-serif !important;
-    }
-    
-    html, body, [class*="css"] {
         direction: rtl !important;
         text-align: right !important;
-        unicode-bidi: embed !important;
-    }
-    
-    .arabic-title {
-        direction: rtl !important;
-        unicode-bidi: bidi-override !important;
-        text-align: center !important;
+        unicode-bidi: normal !important;
     }
     
     .main-header {
@@ -37,11 +34,13 @@ st.markdown("""
         text-align: center;
         margin-bottom: 20px;
         box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        direction: rtl !important;
     }
     
     .main-header h1, .main-header p {
         color: white !important;
         direction: rtl !important;
+        unicode-bidi: normal !important;
         text-align: center !important;
     }
 
@@ -49,13 +48,19 @@ st.markdown("""
         direction: rtl !important;
         text-align: right !important;
     }
+    
+    /* إصلاح محاذاة التبويبات في الجوال */
+    .stTabs [data-baseweb="tab-list"] {
+        direction: rtl !important;
+        justify-content: flex-start;
+    }
     </style>
 """, unsafe_allow_html=True)
 
 st.markdown("""
     <div class="main-header">
-        <h1>منصة ميثاق الرقمية</h1>
-        <p>المنصة الذكية للتدقيق القانوني والامتثال للأنظمة السعودية</p>
+        <h1 style="direction: rtl; unicode-bidi: normal;">منصة ميثاق الرقمية</h1>
+        <p style="direction: rtl; unicode-bidi: normal;">المنصة الذكية للتدقيق القانوني والامتثال للأنظمة السعودية</p>
     </div>
 """, unsafe_allow_html=True)
 
