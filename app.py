@@ -25,15 +25,6 @@ st.markdown(
     p, label, span, div {
         color: #cbd5e1 !important;
     }
-    /* تصميم بطاقات الاختيار البارزة */
-    .mode-card {
-        background-color: #1e293b;
-        border: 2px solid #334155;
-        border-radius: 12px;
-        padding: 20px;
-        text-align: center;
-        margin-bottom: 15px;
-    }
     .stTextInput input, .stTextArea textarea {
         background-color: #1e293b !important;
         color: #ffffff !important;
@@ -78,9 +69,8 @@ st.markdown(
 )
 st.markdown("---")
 
-# اختيار طريقة الفحص عبر قائمة جانبية أو أزرار اختيار واضحة
+# اختيار طريقة الفحص
 st.markdown("### 🔍 اختر أداة التدقيق المطلوبة:")
-
 audit_option = st.radio(
     "حدد طريقة الفحص:",
     [
@@ -103,7 +93,7 @@ if "نص سياسة الخصوصية" in audit_option:
       ),
   )
 
-  if st.button("🚀 ابدأ تحليل النص القانوني (GPT-4o)"):
+  if st.button("🚀 ابدأ تحليل النص القانوني الحقيقي"):
     if not policy_text.strip():
       st.warning("الرجاء إدخال النص القانوني أولاً.")
     elif not api_key:
@@ -118,7 +108,7 @@ if "نص سياسة الخصوصية" in audit_option:
         try:
           client = OpenAI(api_key=api_key)
           response = client.chat.completions.create(
-              model="gpt-4o",
+              model="gpt-4o-mini",
               messages=[
                   {
                       "role": "system",
@@ -147,7 +137,7 @@ else:
       placeholder="https://example.com",
   )
 
-  if st.button("🚀 ابدأ فحص المتجر عبر الرابط (GPT-4o)"):
+  if st.button("🚀 ابدأ فحص المتجر عبر الرابط الحقيقي"):
     if not store_url.strip():
       st.warning("الرجاء إدخال رابط المتجر أولاً.")
     elif not api_key:
@@ -161,7 +151,7 @@ else:
         try:
           client = OpenAI(api_key=api_key)
           response = client.chat.completions.create(
-              model="gpt-4o",
+              model="gpt-4o-mini",
               messages=[
                   {
                       "role": "system",
