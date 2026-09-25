@@ -1,124 +1,137 @@
+import os
 import streamlit as st
-import openai
+from openai import OpenAI
 
-# جلب مفتاح الأمان بشكل آمن من إعدادات المنصة
-try:
-    openai.api_key = st.secrets["OPENAI_API_KEY"]
-except Exception:
-    pass
-
+# إعداد الصفحة وتصميم الواجهة الجذابة
 st.set_page_config(
-    page_title="منصة ميثاق - التدقيق والامتثال الرقمي",
+    page_title="منصة ميثاق | التدقيق القانوني والامتثال",
     page_icon="⚖️",
-    layout="wide"
+    layout="wide",
 )
 
-# تخصيص التصميم والخطوط
-st.markdown("""
+# تخصيص التصميم والخطوط لمنع أي طموس وجعل الواجهة جذابة للغاية
+st.markdown(
+    """
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap');
-    
-    html, body, [class*="css"] {
-        font-family: 'Tajawal', sans-serif !important;
-        direction: rtl;
+    /* خلفية عامة ونصوص واضحة غير مطموسة */
+    .main {
+        background-color: #f8f9fa;
+        color: #1f2937;
     }
-    
-    .main-header {
-        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-        padding: 25px;
-        color: white;
-        border-radius: 14px;
-        text-align: center;
-        margin-bottom: 20px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    /* عناوين رئيسية جذابة */
+    h1, h2, h3 {
+        color: #0f172a !important;
+        font-family: 'Cairo', sans-serif, Arial;
+        font-weight: 700;
     }
-    
-    .radar-box {
-        background-color: #fffbeb;
-        border: 1px solid #fde68a;
-        border-right: 4px solid #d97706;
-        padding: 14px 18px;
-        border-radius: 10px;
-        margin-bottom: 20px;
-        color: #92400e;
-        font-size: 14px;
-        font-weight: 500;
+    /* تنسيق الحاويات والبطاقات */
+    .stTextInput > div > div > input, .stTextArea > div > div > textarea {
+        background-color: #ffffff !important;
+        color: #0f172a !important;
+        border: 1px solid #cbd5e1 !important;
+        border-radius: 8px;
     }
-
-    .footer-section {
-        margin-top: 50px;
-        padding: 20px;
-        background-color: #f8fafc;
-        border-top: 1px solid #e2e8f0;
-        border-radius: 10px;
-        text-align: center;
-        color: #64748b;
-        font-size: 13px;
+    /* تحسين النصوص العادية لضمان الوضوح التام */
+    p, label, span, div {
+        color: #334155;
+    }
+    /* زر الفحص المتميز */
+    .stButton > button {
+        background: linear-gradient(135deg, #1e3a8a 0%, #0f172a 100%);
+        color: white !important;
+        font-weight: bold;
+        border-radius: 8px;
+        padding: 0.6rem 1.5rem;
+        border: none;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .stButton > button:hover {
+        background: linear-gradient(135deg, #1d4ed8 0%, #1e3a8a 100%);
     }
     </style>
-""", unsafe_allow_html=True)
-
-# الترويسة الرئيسية
-st.markdown("""
-    <div class="main-header">
-        <h2 style="color: white; margin: 0; font-weight: 800;">منصة ميثاق الرقمية</h2>
-        <p style="color: #94a3b8; margin: 6px 0 0 0; font-size: 14px;">المحرك الذكي للتدقيق القانوني والامتثال لأنظمة المملكة (PDPL)</p>
-    </div>
-""", unsafe_allow_html=True)
-
-# رادار التغيرات التنظيمية
-st.markdown("""
-    <div class="radar-box">
-        📡 <strong>رادار ميثاق التنظيمي:</strong> تم تحديث القاعدة المعرفية آلياً برصد أحدث التعديلات التشريعية لنظام حماية البيانات الشخصية لعام 2026.
-    </div>
-""", unsafe_allow_html=True)
-
-st.markdown("<h3 style='font-size: 17px; font-weight: 700; color: #1e293b; margin-bottom: 12px;'>🔍 ابدئي الفحص القانوني والامتثال الذكي</h3>", unsafe_allow_html=True)
-
-# حقل إدخال النص القانوني أو سياسة الخصوصية
-policy_text = st.text_area(
-    "أدخلي نص سياسة الخصوصية أو الشروط والأحكام الخاصة بالمطابقة:",
-    height=150,
-    placeholder="اكتبي أو الصقي النص هنا لكي يقوم محرك ميثاق بتحليله بدقة وحقيقية 100%..."
+""",
+    unsafe_allow_html=True,
 )
 
-st.write("")
-analyze_btn = st.button("🚀 بدء التدقيق والتحليل الذكي الفوري", type="primary", use_container_width=True)
+# محاولة جلب مفتاح الـ API من إعدادات Secrets بأمان
+api_key = None
+try:
+  if "OPENAI_API_KEY" in st.secrets:
+    api_key = st.secrets["OPENAI_API_KEY"]
+except Exception:
+  pass
 
-if analyze_btn:
-    if not policy_text:
-        st.error("الرجاء إدخال نص السياسة أو المتجر للبدء بعملية الفحص والتحليل القانوني.")
-    else:
-        with st.spinner("جاري إرسال البيانات للمحرك القانوني وتحليلها فحصاً حقيقياً وفق نظام PDPL السعودي..."):
-            try:
-                # استدعاء نموذج الذكاء الاصطناعي الحقيقي للتحليل القانوني
-                response = openai.chat.completions.create(
-                    model="gpt-4o",
-                    messages=[
-                        {
-                            "role": "system",
-                            "content": "أنت محامٍ خبير ومحكم قانوني معتمد في الأنظمة السعودية وتحديداً نظام حماية البيانات الشخصية (PDPL) ولوائح التجارة الإلكترونية. قم بتحليل النص المُدخل واكتشاف الثغرات القانونية بدقة واحترافية عالية باللغة العربية."
-                        },
-                        {
-                            "role": "user",
-                            "content": f"قم بتحليل النص التالي تحليلاً قانونياً شاملاً ومفصلاً:\n\n{policy_text}"
-                        }
-                    ],
-                    temperature=0.3
-                )
-                
-                analysis_result = response.choices[0].message.content
-                
-                st.success("✨ تم فحص وإصدار تقرير الامتثال القانوني بنجاح تام!")
-                st.markdown("---")
-                st.markdown(analysis_result)
-                
-            except Exception as e:
-                st.error(f"عذراً، يرجى التأكد من إضافة مفتاح الـ API بشكل صحيح في إعدادات المنصة. التفاصيل: {e}")
+# العنوان الهيكلي والهوية البصرية للمنصة
+st.title("⚖️ منصة ميثاق للتدقيق القانوني والامتثال (PDPL)")
+st.markdown(
+    "**محرك الذكاء الاصطناعي المتقدم لفحص سياسات الخصوصية والامتثال التنظيمي"
+    " بدقة فائقة.**"
+)
+st.markdown("---")
 
-# تذييل الصفحة
-st.markdown("""
-    <div class="footer-section">
-        <strong>منصة ميثاق الرقمية</strong> &nbsp;|&nbsp; حماية المتاجر والمنشآت وضمان الامتثال للأنظمة السعودية.
-    </div>
-""", unsafe_allow_html=True)
+# صندوق إدخال النص القانوني أو سياسة الخصوصية
+st.markdown("### 📄 إدخال وثيقة السياسة المراد فحصها:")
+policy_text = st.text_area(
+    "الصق نص سياسة الخصوصية أو بنود الاستخدام هنا:",
+    height=200,
+    placeholder=(
+        "مثال: تجمع الشركة البيانات الشخصية للعملاء لأغراض التسويق وتحسين"
+        " الخدمات..."
+    ),
+)
+
+# زر بدء الفحص
+if st.button("🚀 بدء التدقيق والتحليل الذكي الفوري"):
+  if not policy_text.strip():
+    st.warning("الرجاء إدخال نص السياسة القانونية أولاً ليتمكن المحرك من فحصها.")
+  elif not api_key:
+    st.error(
+        "تنبيه: مفتاح الغير مفعل في Secrets أو الصيغة غير صحيحة. يرجى مراجعة"
+        " إعدادات المفتاح."
+    )
+  else:
+    with st.spinner(
+        "جاري تحليل السياسة ومطابقتها مع نظام حماية البيانات الشخصية"
+        " (PDPL)..."
+    ):
+      try:
+        # الاتصال بمحرك OpenAI الحقيقي (GPT-4o)
+        client = OpenAI(api_key=api_key)
+
+        response = client.chat.completions.create(
+            model="gpt-4o",
+            messages=[
+                {
+                    "role": "system",
+                    "content": (
+                        "أنت محامٍ خبير ومحكم قانوني معتمد في نظام حماية البيانات"
+                        " الشخصية السعودي (PDPL). قم بتحليل النص المدخل بدقة،"
+                        " واستخرج الثغرات القانونية، ومستوى الامتثال، وقدم تقريراً"
+                        " تنظيمياً احترافياً ومنظماً بالعربية."
+                    ),
+                },
+                {"role": "user", "content": policy_text},
+            ],
+            temperature=0.3,
+        )
+
+        audit_report = response.choices[0].message.content
+
+        # عرض التقرير القانوني الاحترافي
+        st.success("تم الانتهاء من التدقيق القانوني بنجاح!")
+        st.markdown("### 📊 تقرير الامتثال القانوني الصادر:")
+        st.markdown(audit_report)
+
+      except Exception as e:
+        st.error(
+            f"حدث خطأ أثناء الاتصال بمحرك الذكاء الاصطناعي الحقيقي: {str(e)}"
+        )
+
+# تذييل الصفحة الرسمي للجنة التحكيم
+st.markdown("---")
+st.markdown(
+    "<p style='text-align: center; color: #64748b; font-size: 0.9rem;'>منصة"
+    " ميثاق القانونية © 2026 - جميع الحقوق محفوظة لعرض مشروع الامتثال"
+    " الذكي</p>",
+    unsafe_allow_html=True,
+)
