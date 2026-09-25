@@ -26,6 +26,16 @@ st.markdown("""
         margin-bottom: 20px;
         box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     }
+
+    .footer {
+        margin-top: 50px;
+        padding: 20px;
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        border-top: 1px solid #e9ecef;
+        text-align: center;
+        color: #6c757d;
+    }
     </style>
 """, unsafe_allow_html=True)
 
@@ -36,14 +46,6 @@ st.markdown("""
         <p style="color: white; direction: rtl; text-align: center; font-family: 'Tajawal', sans-serif; margin-top: 10px;">المنصة الذكية للتدقيق القانوني والامتثال للأنظمة السعودية</p>
     </div>
 """, unsafe_allow_html=True)
-
-with st.sidebar:
-    st.markdown('<div style="direction: rtl; text-align: right; font-family: \'Tajawal\', sans-serif;">', unsafe_allow_html=True)
-    st.header("حول المنصة")
-    st.info("ميثاق هي أداة ذكاء اصطناعي تفحص المتاجر والمنشآت للتأكد من مطابقتها للأنظمة واللوائح السعودية وتجنب الغرامات.")
-    st.markdown("---")
-    st.caption("مشارك في مسابقة أكاديمية طويق (SAIF)")
-    st.markdown('</div>', unsafe_allow_html=True)
 
 st.markdown('<div style="direction: rtl; text-align: right; font-family: \'Tajawal\', sans-serif;">', unsafe_allow_html=True)
 st.subheader("ادخلي بيانات المتجر أو سياسة الخصوصية للفحص")
@@ -111,3 +113,13 @@ if analyze_btn:
         with st.expander("عرض البند القانوني المولد وتطبيقه"):
             st.markdown(generated_fix)
         st.markdown('</div>', unsafe_allow_html=True)
+
+# تذييل الصفحة (حول المنصة في النهاية)
+st.markdown("""
+    <div class="footer">
+        <h4 style="direction: rtl; text-align: center; color: #1e3c72; margin-bottom: 5px;">حول منصة ميثاق</h4>
+        <p style="direction: rtl; text-align: center; font-size: 14px; margin: 0;">
+            ميثاق هي أداة ذكاء اصطناعي تفحص المتاجر والمنشآت للتأكد من مطابقتها للأنظمة واللوائح السعودية وتجنب الغرامات.
+        </p>
+    </div>
+""", unsafe_allow_html=True)
