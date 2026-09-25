@@ -1,4 +1,5 @@
 import streamlit as st
+import json
 import time
 
 st.set_page_config(
@@ -7,87 +8,68 @@ st.set_page_config(
     layout="wide"
 )
 
-# تخصيص التصميم والخطوط بملف CSS نظيف ومرتب
+# كود CSS أساسي لتنظيف واجهة العرض وتثبيت الاتجاه
 st.markdown("""
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap');
     
     html, body, [class*="css"] {
         font-family: 'Tajawal', sans-serif !important;
-        direction: rtl;
     }
     
     .main-header {
-        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-        padding: 25px;
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        padding: 24px;
         color: white;
         border-radius: 12px;
         text-align: center;
         margin-bottom: 20px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    }
-    
-    .radar-box {
-        background-color: #fef3c7;
-        border: 1px solid #fde68a;
-        border-right: 4px solid #d97706;
-        padding: 12px 18px;
-        border-radius: 8px;
-        margin-bottom: 20px;
-        color: #92400e;
-        font-size: 14px;
-        font-weight: 500;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     }
 
-    .footer-section {
+    .footer {
         margin-top: 50px;
         padding: 20px;
-        background-color: #f8fafc;
-        border-top: 1px solid #e2e8f0;
-        border-radius: 8px;
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        border-top: 1px solid #e9ecef;
         text-align: center;
-        color: #64748b;
-        font-size: 13px;
+        color: #6c757d;
     }
     </style>
 """, unsafe_allow_html=True)
 
-# الترويسة الرئيسية
+# استخدام هيكل HTML صريح يمنع انعكاس الحروف على الجوال تماماً
 st.markdown("""
     <div class="main-header">
-        <h2 style="color: white; margin: 0; font-weight: 800;">منصة ميثاق الرقمية</h2>
-        <p style="color: #94a3b8; margin: 6px 0 0 0; font-size: 14px;">المحرك الذكي للتدقيق القانوني والامتثال للأنظمة السعودية</p>
+        <h1 style="color: white; direction: rtl; text-align: center; font-family: 'Tajawal', sans-serif; margin: 0;">منصة ميثاق الرقمية</h1>
+        <p style="color: white; direction: rtl; text-align: center; font-family: 'Tajawal', sans-serif; margin-top: 10px;">المنصة الذكية للتدقيق القانوني والامتثال للأنظمة السعودية</p>
     </div>
 """, unsafe_allow_html=True)
 
-# رادار التغيرات التنظيمية
-st.markdown("""
-    <div class="radar-box">
-        📡 <strong>رادار ميثاق التنظيمي:</strong> تم تحديث القاعدة المعرفية آلياً برصد أحدث التعديلات التشريعية لنظام حماية البيانات الشخصية (PDPL) لعام 2026.
-    </div>
-""", unsafe_allow_html=True)
+st.markdown('<div style="direction: rtl; text-align: right; font-family: \'Tajawal\', sans-serif;">', unsafe_allow_html=True)
+st.subheader("ادخلي بيانات المتجر أو سياسة الخصوصية للفحص")
+st.markdown('</div>', unsafe_allow_html=True)
 
-st.markdown("### 🔍 ابدئي الفحص القانوني والامتثال الذكي")
-
-# التبويبات القياسية المنظمة
 tab1, tab2 = st.tabs(["فحص عبر رابط المتجر", "فحص نص السياسة مباشرة"])
 
 store_url = ""
 policy_text = ""
 
 with tab1:
-    st.write("")
-    store_url = st.text_input("أدخلي رابط المتجر الإلكتروني:", placeholder="https://example.com")
+    st.markdown('<div style="direction: rtl; text-align: right;">', unsafe_allow_html=True)
+    store_url = st.text_input("رابط المتجر الإلكتروني:", placeholder="https://example.com")
+    st.markdown('</div>', unsafe_allow_html=True)
 
 with tab2:
-    st.write("")
-    policy_text = st.text_area("أدخلي نص سياسة الخصوصية أو الشروط والأحكام:", height=130, placeholder="اكتبي أو الصقي النص هنا...")
+    st.markdown('<div style="direction: rtl; text-align: right;">', unsafe_allow_html=True)
+    policy_text = st.text_area("نص سياسة الخصوصية أو الشروط والأحكام:", height=130, placeholder="انسخي نص السياسة هنا...")
+    st.markdown('</div>', unsafe_allow_html=True)
 
-st.write("")
-analyze_btn = st.button("🚀 بدء التدقيق والتحليل الفوري", type="primary", use_container_width=True)
+analyze_btn = st.button("ابدأ الفحص القانوني الآن", type="primary", use_container_width=True)
 
 if analyze_btn:
-    with st.spinner("جاري فحص المستندات ومطابقتها مع الأنظمة السعودية بدقة..."):
+    with st.spinner("جاري فحص المستندات ومطابقتها مع الأنظمة السعودية..."):
         time.sleep(2)
         score = 68
         passed_items = [
@@ -101,8 +83,8 @@ if analyze_btn:
             "عدم توضيح استخدام ملفات تعريف الارتباط (Cookies) وتأمين المدفوعات."
         ]
         generated_fix = """
-### البند القانوني المقترح (معتمد وفق نظام PDPL):
-"يلتزم المتجر بحماية بيانات المستخدمين الشخصية وفقاً لنظام حماية البيانات الشخصية. يحق للمستخدم في أي وقت طلب الوصول إلى بياناته، أو تصحيحها، أو طلب مسحها نهائياً."
+### البند المقترح لإضافته (معتمد وفق نظام PDPL):
+"يلتزم المتجر بحماية بيانات المستخدمين الشخصية وفقاً لنظام حماية البيانات الشخصية. يحق للمستخدم في أي وقت طلب الوصول إلى بياناته، أو تصحيحها، أو طلب مسحها نهائياً من خوادمنا."
         """
 
         st.success("تم التقييم بنجاح! إليك تقرير الامتثال:")
@@ -114,29 +96,30 @@ if analyze_btn:
         with c2:
             st.metric(label="بنود مطابقة", value=len(passed_items))
         with c3:
-            st.metric(label="مخالفات محتملة", value=len(failed_items))
+            st.metric(label="مخالفات", value=len(failed_items))
 
         st.markdown("---")
-        st.subheader("✅ البنود المكتملة")
+        st.markdown('<div style="direction: rtl; text-align: right;">', unsafe_allow_html=True)
+        st.subheader("البنود المكتملة")
         for item in passed_items:
             st.success(item)
 
-        st.subheader("⚠️ الثغرات والمخاطر المكتشفة")
+        st.subheader("الثغرات والمخاطر المكتشفة")
         for item in failed_items:
             st.error(item)
 
         st.markdown("---")
-        st.subheader("💡 التوليد الآلي للحلول والبنود")
-        with st.expander("عرض البند القانوني المقترح وتطبيقه"):
+        st.subheader("التوليد الآلي للحلول")
+        with st.expander("عرض البند القانوني المولد وتطبيقه"):
             st.markdown(generated_fix)
-            
-        st.write("")
-        if st.button("📥 تصدير التقرير الرسمي كملف PDF", use_container_width=True):
-            st.info("جاري إعداد تقرير الامتثال...")
+        st.markdown('</div>', unsafe_allow_html=True)
 
-# تذييل الصفحة
+# تذييل الصفحة (حول المنصة في النهاية)
 st.markdown("""
-    <div class="footer-section">
-        <strong>منصة ميثاق الرقمية</strong> &nbsp;|&nbsp; حماية المتاجر والمنشآت وضمان الامتثال للأنظمة السعودية.
+    <div class="footer">
+        <h4 style="direction: rtl; text-align: center; color: #1e3c72; margin-bottom: 5px;">حول منصة ميثاق</h4>
+        <p style="direction: rtl; text-align: center; font-size: 14px; margin: 0;">
+            ميثاق هي أداة ذكاء اصطناعي تفحص المتاجر والمنشآت للتأكد من مطابقتها للأنظمة واللوائح السعودية وتجنب الغرامات.
+        </p>
     </div>
 """, unsafe_allow_html=True)
