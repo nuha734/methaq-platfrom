@@ -7,7 +7,7 @@ st.set_page_config(
     layout="wide"
 )
 
-# تصميم عصري ونظيف ومترابط
+# تخصيص التصميم والخطوط بملف CSS نظيف ومرتب
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap');
@@ -19,56 +19,57 @@ st.markdown("""
     
     .main-header {
         background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-        padding: 30px;
+        padding: 25px;
         color: white;
-        border-radius: 14px;
+        border-radius: 12px;
         text-align: center;
-        margin-bottom: 25px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        margin-bottom: 20px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
     
     .radar-box {
-        background-color: #fffbeb;
+        background-color: #fef3c7;
         border: 1px solid #fde68a;
         border-right: 4px solid #d97706;
-        padding: 15px 20px;
-        border-radius: 10px;
-        margin-bottom: 25px;
+        padding: 12px 18px;
+        border-radius: 8px;
+        margin-bottom: 20px;
         color: #92400e;
-        font-size: 14.5px;
+        font-size: 14px;
+        font-weight: 500;
     }
 
     .footer-section {
-        margin-top: 60px;
+        margin-top: 50px;
         padding: 20px;
         background-color: #f8fafc;
         border-top: 1px solid #e2e8f0;
-        border-radius: 10px;
+        border-radius: 8px;
         text-align: center;
         color: #64748b;
-        font-size: 13.5px;
+        font-size: 13px;
     }
     </style>
 """, unsafe_allow_html=True)
 
-# الترويسة
+# الترويسة الرئيسية
 st.markdown("""
     <div class="main-header">
-        <h1 style="color: white; margin: 0; font-size: 28px; font-weight: 800;">منصة ميثاق الرقمية</h1>
-        <p style="color: #94a3b8; margin: 8px 0 0 0; font-size: 15px; font-weight: 500;">المحرك الذكي للتدقيق القانوني والامتثال للأنظمة السعودية</p>
+        <h2 style="color: white; margin: 0; font-weight: 800;">منصة ميثاق الرقمية</h2>
+        <p style="color: #94a3b8; margin: 6px 0 0 0; font-size: 14px;">المحرك الذكي للتدقيق القانوني والامتثال للأنظمة السعودية</p>
     </div>
 """, unsafe_allow_html=True)
 
 # رادار التغيرات التنظيمية
 st.markdown("""
     <div class="radar-box">
-        <strong>📡 رادار ميثاق التنظيمي:</strong> تم تحديث القاعدة المعرفية آلياً برصد أحدث التعديلات التشريعية لنظام حماية البيانات الشخصية (PDPL) لعام 2026.
+        📡 <strong>رادار ميثاق التنظيمي:</strong> تم تحديث القاعدة المعرفية آلياً برصد أحدث التعديلات التشريعية لنظام حماية البيانات الشخصية (PDPL) لعام 2026.
     </div>
 """, unsafe_allow_html=True)
 
-st.markdown("<h3 style='font-size: 18px; font-weight: 700; color: #1e293b; margin-bottom: 15px;'>🔍 ابدئي الفحص القانوني والامتثال الذكي</h3>", unsafe_allow_html=True)
+st.markdown("### 🔍 ابدئي الفحص القانوني والامتثال الذكي")
 
-# التبويبات القياسية
+# التبويبات القياسية المنظمة
 tab1, tab2 = st.tabs(["فحص عبر رابط المتجر", "فحص نص السياسة مباشرة"])
 
 store_url = ""
@@ -86,7 +87,7 @@ st.write("")
 analyze_btn = st.button("🚀 بدء التدقيق والتحليل الفوري", type="primary", use_container_width=True)
 
 if analyze_btn:
-    with st.spinner("جاري فحص المستندات ومطابقتها مع الأنظمة السعودية..."):
+    with st.spinner("جاري فحص المستندات ومطابقتها مع الأنظمة السعودية بدقة..."):
         time.sleep(2)
         score = 68
         passed_items = [
@@ -133,9 +134,9 @@ if analyze_btn:
         if st.button("📥 تصدير التقرير الرسمي كملف PDF", use_container_width=True):
             st.info("جاري إعداد تقرير الامتثال...")
 
-# التذييل
+# تذييل الصفحة
 st.markdown("""
     <div class="footer-section">
-        <strong>منصة ميثاق الرقمية</strong> &nbsp;|&nbsp; الأداة الذكية الأولى لحماية المتاجر وضمان الامتثال للأنظمة السعودية.
+        <strong>منصة ميثاق الرقمية</strong> &nbsp;|&nbsp; حماية المتاجر والمنشآت وضمان الامتثال للأنظمة السعودية.
     </div>
 """, unsafe_allow_html=True)
