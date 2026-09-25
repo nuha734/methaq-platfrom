@@ -8,48 +8,43 @@ st.set_page_config(
     layout="wide"
 )
 
-# تحسينات التنسيق والاتجاه لتعمل بسلاسة على الجوال وسطح المكتب
+# فرض الاتجاه العربي وتنسيق العناصر للجوال وسطح المكتب بدقة
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap');
     
     html, body, [class*="css"] {
-        font-family: 'Tajawal', sans-serif;
-        direction: rtl;
-        text-align: right;
+        font-family: 'Tajawal', sans-serif !important;
+        direction: rtl !important;
+        text-align: right !important;
     }
     
     .main-header {
         background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-        padding: 20px;
+        padding: 22px;
         color: white;
         border-radius: 12px;
         text-align: center;
         margin-bottom: 20px;
         box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        direction: rtl;
     }
     
     .main-header h1 {
-        font-size: 1.8rem;
+        font-size: 1.6rem;
         margin-bottom: 8px;
+        color: white !important;
     }
     
     .main-header p {
-        font-size: 0.95rem;
-        opacity: 0.9;
+        font-size: 0.9rem;
+        color: #f0f2f6 !important;
+        margin: 0;
     }
-    
-    /* تنسيق الأزرار والحقول */
-    .stButton button {
-        background-color: #1e3c72;
-        color: white;
-        border-radius: 8px;
-        font-weight: bold;
-    }
-    
-    .stButton button:hover {
-        background-color: #2a5298;
-        color: white;
+
+    .stTextInput input, .stTextArea textarea {
+        direction: rtl !important;
+        text-align: right !important;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -113,7 +108,7 @@ if analyze_btn:
             st.metric(label="مخالفات تحتاج معالجة", value=len(failed_items), delta_color="inverse")
 
         st.markdown("---")
-        col_res1, col_res2 = st.columns(1)
+        col_res1 = st.container()
 
         with col_res1:
             st.subheader("✅ البنود المكتملة")
