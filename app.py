@@ -1,125 +1,165 @@
+import os
 import streamlit as st
-import json
-import time
+from openai import OpenAI
 
+# إعدادات الصفحة
 st.set_page_config(
-    page_title="منصة ميثاق - التدقيق والامتثال الرقمي",
+    page_title="منصة ميثاق الرقمية",
     page_icon="⚖️",
-    layout="wide"
+    layout="wide",
 )
 
-# كود CSS أساسي لتنظيف واجهة العرض وتثبيت الاتجاه
-st.markdown("""
+# تنسيق الواجهة والخطوط لضمان الوضوح التام ومنع أي طموس
+st.markdown(
+    """
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap');
-    
-    html, body, [class*="css"] {
-        font-family: 'Tajawal', sans-serif !important;
+    .stApp {
+        background-color: #0e1117;
+        color: #ffffff !important;
     }
-    
-    .main-header {
-        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-        padding: 24px;
-        color: white;
-        border-radius: 12px;
-        text-align: center;
-        margin-bottom: 20px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    h1, h2, h3, h4, h5, h6 {
+        color: #ffffff !important;
+        font-family: 'Cairo', sans-serif, Arial;
+        font-weight: 700;
     }
-
-    .footer {
-        margin-top: 50px;
-        padding: 20px;
-        background-color: #f8f9fa;
-        border-radius: 10px;
-        border-top: 1px solid #e9ecef;
-        text-align: center;
-        color: #6c757d;
+    p, label, span, div {
+        color: #e2e8f0 !important;
+    }
+    .stTextInput input, .stTextArea textarea {
+        background-color: #1e293b !important;
+        color: #ffffff !important;
+        border: 1px solid #334155 !important;
+        border-radius: 8px;
+    }
+    .stButton > button {
+        background: linear-gradient(135deg, #1e3a8a 0%, #0f172a 100%);
+        color: white !important;
+        font-weight: bold;
+        border-radius: 8px;
+        padding: 0.6rem 1.5rem;
+        border: none;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    }
+    .stButton > button:hover {
+        background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
     }
     </style>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True,
+)
 
-# استخدام هيكل HTML صريح يمنع انعكاس الحروف على الجوال تماماً
-st.markdown("""
-    <div class="main-header">
-        <h1 style="color: white; direction: rtl; text-align: center; font-family: 'Tajawal', sans-serif; margin: 0;">منصة ميثاق الرقمية</h1>
-        <p style="color: white; direction: rtl; text-align: center; font-family: 'Tajawal', sans-serif; margin-top: 10px;">المنصة الذكية للتدقيق القانوني والامتثال للأنظمة السعودية</p>
-    </div>
-""", unsafe_allow_html=True)
+# جلب مفتاح OpenAI API بأمان
+api_key = None
+try:
+  if "OPENAI_API_KEY" in st.secrets:
+    api_key = st.secrets["OPENAI_API_KEY"]
+except Exception:
+  pass
 
-st.markdown('<div style="direction: rtl; text-align: right; font-family: \'Tajawal\', sans-serif;">', unsafe_allow_html=True)
-st.subheader("ادخلي بيانات المتجر أو سياسة الخصوصية للفحص")
-st.markdown('</div>', unsafe_allow_html=True)
+# العنوان والهوية البصرية للمنصة
+st.title("منصة ميثاق الرقمية")
+st.markdown("المنصة الذكية للتدقيق القانوني والامتثال للأنظمة السعودية")
+st.markdown("---")
 
-tab1, tab2 = st.tabs(["فحص عبر رابط المتجر", "فحص نص السياسة مباشرة"])
+st.markdown("### ادخلي بيانات المتجر أو سياسة الخصوصية للفحص")
 
-store_url = ""
-policy_text = ""
+# أدوات الفحص في تبويبين جنب بعض (كما طلبتِ تماماً)
+tab1, tab2 = st.tabs(["فحص نص السياسة مباشرة", "فحص عبر رابط المتجر"])
 
+# محتوى التبويب الأول: فحص النص مباشرة
 with tab1:
-    st.markdown('<div style="direction: rtl; text-align: right;">', unsafe_allow_html=True)
-    store_url = st.text_input("رابط المتجر الإلكتروني:", placeholder="https://example.com")
-    st.markdown('</div>', unsafe_allow_html=True)
+  st.markdown("#### إدخال نص السياسة القانونية:")
+  policy_text = st.text_area(
+      "الصق نص سياسة الخصوصية أو بنود الاستخدام هنا:",
+      height=180,
+      placeholder=(
+          "مثال: تجمع الشركة البيانات الشخصية للعملاء لأغراض التسويق..."
+      ),
+      key="tab1_input",
+  )
+  run_text_audit = st.button("🚀 ابدأ فحص النص القانوني")
 
+  if run_text_audit:
+    if not policy_text.strip():
+      st.warning("الرجاء إدخال النص القانوني أولاً.")
+    elif not api_key:
+      st.error("تنبيه: مفتاح الـ API غير مفعل أو غير صحيح في إعدادات Secrets.")
+    else:
+      with st.spinner(
+          "جاري تحليل السياسة ومطابقتها مع نظام حماية البيانات الشخصية"
+          " (PDPL)..."
+      ):
+        try:
+          client = OpenAI(api_key=api_key)
+          response = client.chat.completions.create(
+              model="gpt-4o",
+              messages=[
+                  {
+                      "role": "system",
+                      "content": (
+                          "أنت محامٍ خبير ومحكم قانوني معتمد في نظام حماية"
+                          " البيانات الشخصية السعودي (PDPL). قم بتحليل النص"
+                          " المدخل بدقة، واستخرج الثغرات القانونية، ومستوى"
+                          " الامتثال، وقدم تقريراً تنظيمياً احترافياً بالعربية."
+                      ),
+                  },
+                  {"role": "user", "content": policy_text},
+              ],
+              temperature=0.3,
+          )
+          st.success("تم الانتهاء من التدقيق بنجاح!")
+          st.markdown("### تقرير الامتثال القانوني:")
+          st.markdown(response.choices[0].message.content)
+        except Exception as e:
+          st.error(f"حدث خطأ أثناء الاتصال بمحرك الذكاء الاصطناعي: {str(e)}")
+
+# محتوى التبويب الثاني: فحص عبر الرابط
 with tab2:
-    st.markdown('<div style="direction: rtl; text-align: right;">', unsafe_allow_html=True)
-    policy_text = st.text_area("نص سياسة الخصوصية أو الشروط والأحكام:", height=130, placeholder="انسخي نص السياسة هنا...")
-    st.markdown('</div>', unsafe_allow_html=True)
+  st.markdown("#### رابط المتجر الإلكتروني:")
+  store_url = st.text_input(
+      "رابط المتجر الإلكتروني",
+      placeholder="https://example.com",
+      key="tab2_input",
+  )
+  run_url_audit = st.button("🚀 ابدأ فحص المتجر عبر الرابط")
 
-analyze_btn = st.button("ابدأ الفحص القانوني الآن", type="primary", use_container_width=True)
+  if run_url_audit:
+    if not store_url.strip():
+      st.warning("الرجاء إدخال رابط المتجر أولاً.")
+    elif not api_key:
+      st.error("تنبيه: مفتاح الـ API غير مفعل أو غير صحيح في إعدادات Secrets.")
+    else:
+      with st.spinner(
+          "جاري فحص المتجر والتحقق من بنود الامتثال عبر الرابط..."
+      ):
+        try:
+          client = OpenAI(api_key=api_key)
+          response = client.chat.completions.create(
+              model="gpt-4o",
+              messages=[
+                  {
+                      "role": "system",
+                      "content": (
+                          "أنت خبير قانوني ومحقق امتثال رقمي. قم بتقديم تقييم"
+                          " افتراضي وتوجيهي لمدى التزام المتاجر الإلكترونية"
+                          " بالأنظمة السعودية بناءً على الرابط المقدم، واقترح"
+                          " البنود الناقصة."
+                      ),
+                  },
+                  {"role": "user", "content": f"رابط المتجر المراد فحصه: {store_url}"},
+              ],
+              temperature=0.3,
+          )
+          st.success("تم الانتهاء من فحص الرابط بنجاح!")
+          st.markdown("### تقرير فحص المتجر والرابط:")
+          st.markdown(response.choices[0].message.content)
+        except Exception as e:
+          st.error(f"حدث خطأ أثناء الاتصال بمحرك الذكاء الاصطناعي: {str(e)}")
 
-if analyze_btn:
-    with st.spinner("جاري فحص المستندات ومطابقتها مع الأنظمة السعودية..."):
-        time.sleep(2)
-        score = 68
-        passed_items = [
-            "وجود بيانات توثيق السجل التجاري والمالك.",
-            "تحديد وسائل التواصل وتلقي الشكاوى بشكل واضح.",
-            "سياسة الاسترجاع متوافقة مع المدة المحددة من وزارة التجارة."
-        ]
-        failed_items = [
-            "عدم وجود سياسة واضحة لحفظ وتدمير البيانات الشخصية وفق نظام (PDPL).",
-            "غياب خيار صريح يتيح للمستخدم المطالبة بحذف بياناته أو تعديلها.",
-            "عدم توضيح استخدام ملفات تعريف الارتباط (Cookies) وتأمين المدفوعات."
-        ]
-        generated_fix = """
-### البند المقترح لإضافته (معتمد وفق نظام PDPL):
-"يلتزم المتجر بحماية بيانات المستخدمين الشخصية وفقاً لنظام حماية البيانات الشخصية. يحق للمستخدم في أي وقت طلب الوصول إلى بياناته، أو تصحيحها، أو طلب مسحها نهائياً من خوادمنا."
-        """
-
-        st.success("تم التقييم بنجاح! إليك تقرير الامتثال:")
-        st.markdown("---")
-
-        c1, c2, c3 = st.columns(3)
-        with c1:
-            st.metric(label="مستوى الامتثال", value=f"{score}%")
-        with c2:
-            st.metric(label="بنود مطابقة", value=len(passed_items))
-        with c3:
-            st.metric(label="مخالفات", value=len(failed_items))
-
-        st.markdown("---")
-        st.markdown('<div style="direction: rtl; text-align: right;">', unsafe_allow_html=True)
-        st.subheader("البنود المكتملة")
-        for item in passed_items:
-            st.success(item)
-
-        st.subheader("الثغرات والمخاطر المكتشفة")
-        for item in failed_items:
-            st.error(item)
-
-        st.markdown("---")
-        st.subheader("التوليد الآلي للحلول")
-        with st.expander("عرض البند القانوني المولد وتطبيقه"):
-            st.markdown(generated_fix)
-        st.markdown('</div>', unsafe_allow_html=True)
-
-# تذييل الصفحة (حول المنصة في النهاية)
-st.markdown("""
-    <div class="footer">
-        <h4 style="direction: rtl; text-align: center; color: #1e3c72; margin-bottom: 5px;">حول منصة ميثاق</h4>
-        <p style="direction: rtl; text-align: center; font-size: 14px; margin: 0;">
-            ميثاق هي أداة ذكاء اصطناعي تفحص المتاجر والمنشآت للتأكد من مطابقتها للأنظمة واللوائح السعودية وتجنب الغرامات.
-        </p>
-    </div>
-""", unsafe_allow_html=True)
+# تذييل الصفحة
+st.markdown("---")
+st.markdown(
+    "<p style='text-align: center; color: #94a3b8; font-size:"
+    " 0.9rem;'>منصة ميثاق الرقمية للتدقيق والامتثال الذكي</p>",
+    unsafe_allow_html=True,
+)
