@@ -8,21 +8,48 @@ st.set_page_config(
     layout="wide"
 )
 
+# تحسينات التنسيق والاتجاه لتعمل بسلاسة على الجوال وسطح المكتب
 st.markdown("""
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap');
-    html, body, [class*="css"]  {
+    @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap');
+    
+    html, body, [class*="css"] {
         font-family: 'Tajawal', sans-serif;
         direction: rtl;
         text-align: right;
     }
+    
     .main-header {
-        background: linear-gradient(90deg, #1e3c72 0%, #2a5298 100%);
-        padding: 24px;
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        padding: 20px;
         color: white;
         border-radius: 12px;
         text-align: center;
-        margin-bottom: 25px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    
+    .main-header h1 {
+        font-size: 1.8rem;
+        margin-bottom: 8px;
+    }
+    
+    .main-header p {
+        font-size: 0.95rem;
+        opacity: 0.9;
+    }
+    
+    /* تنسيق الأزرار والحقول */
+    .stButton button {
+        background-color: #1e3c72;
+        color: white;
+        border-radius: 8px;
+        font-weight: bold;
+    }
+    
+    .stButton button:hover {
+        background-color: #2a5298;
+        color: white;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -38,7 +65,7 @@ with st.sidebar:
     st.header("حول المنصة")
     st.info("ميثاق هي أداة ذكاء اصطناعي تفحص المتاجر والمنشآت للتأكد من مطابقتها للأنظمة واللوائح السعودية وتجنب الغرامات.")
     st.markdown("---")
-    demo_mode = st.toggle("تفعيل التقييم التجريبي السريع (Demo)", value=True)
+    st.caption("مشارك في مسابقة أكاديمية طويق (SAIF)")
 
 st.subheader("📝 ادخلي بيانات المتجر أو سياسة الخصوصية للفحص")
 
@@ -51,9 +78,9 @@ with tab1:
     store_url = st.text_input("رابط المتجر الإلكتروني:", placeholder="https://example.com")
 
 with tab2:
-    policy_text = st.text_area("نص سياسة الخصوصية والشروط والأحكام:", height=150, placeholder="انسخي نص السياسة هنا...")
+    policy_text = st.text_area("نص سياسة الخصوصية أو الشروط والأحكام:", height=130, placeholder="انسخي نص السياسة هنا...")
 
-analyze_btn = st.button("🔍 ابدأ الفحص الآن", type="primary", use_container_width=True)
+analyze_btn = st.button("🔍 ابدأ الفحص القانوني الآن", type="primary", use_container_width=True)
 
 if analyze_btn:
     with st.spinner("جاري فحص المستندات ومطابقتها مع الأنظمة السعودية (PDPL ونظام التجارة الإلكترونية)..."):
@@ -86,14 +113,13 @@ if analyze_btn:
             st.metric(label="مخالفات تحتاج معالجة", value=len(failed_items), delta_color="inverse")
 
         st.markdown("---")
-        col_res1, col_res2 = st.columns(2)
+        col_res1, col_res2 = st.columns(1)
 
         with col_res1:
             st.subheader("✅ البنود المكتملة")
             for item in passed_items:
                 st.success(f"✓ {item}")
 
-        with col_res2:
             st.subheader("⚠️ الثغرات والمخاطر المكتشفة")
             for item in failed_items:
                 st.error(f"✗ {item}")
