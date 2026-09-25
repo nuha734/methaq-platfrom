@@ -2,58 +2,53 @@ import os
 import streamlit as st
 from openai import OpenAI
 
-# إعداد الصفحة وتصميم الواجهة الجذابة
+# إعدادات الصفحة
 st.set_page_config(
     page_title="منصة ميثاق | التدقيق القانوني والامتثال",
     page_icon="⚖️",
     layout="wide",
 )
 
-# تخصيص التصميم والخطوط لمنع أي طموس وجعل الواجهة جذابة للغاية
+# تنسيق الواجهة والخطوط لضمان وضوحها تماماً وعدم طمسها
 st.markdown(
     """
     <style>
-    /* خلفية عامة ونصوص واضحة غير مطموسة */
-    .main {
-        background-color: #f8f9fa;
-        color: #1f2937;
+    .stApp {
+        background-color: #0e1117;
+        color: #ffffff !important;
     }
-    /* عناوين رئيسية جذابة */
-    h1, h2, h3 {
-        color: #0f172a !important;
+    h1, h2, h3, h4, h5, h6 {
+        color: #f8fafc !important;
         font-family: 'Cairo', sans-serif, Arial;
         font-weight: 700;
     }
-    /* تنسيق الحاويات والبطاقات */
-    .stTextInput > div > div > input, .stTextArea > div > div > textarea {
-        background-color: #ffffff !important;
-        color: #0f172a !important;
-        border: 1px solid #cbd5e1 !important;
+    p, label, span, div {
+        color: #e2e8f0 !important;
+    }
+    .stTextInput input, .stTextArea textarea {
+        background-color: #1e293b !important;
+        color: #ffffff !important;
+        border: 1px solid #334155 !important;
         border-radius: 8px;
     }
-    /* تحسين النصوص العادية لضمان الوضوح التام */
-    p, label, span, div {
-        color: #334155;
-    }
-    /* زر الفحص المتميز */
     .stButton > button {
-        background: linear-gradient(135deg, #1e3a8a 0%, #0f172a 100%);
+        background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
         color: white !important;
         font-weight: bold;
         border-radius: 8px;
         padding: 0.6rem 1.5rem;
         border: none;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
     }
     .stButton > button:hover {
-        background: linear-gradient(135deg, #1d4ed8 0%, #1e3a8a 100%);
+        background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
     }
     </style>
 """,
     unsafe_allow_html=True,
 )
 
-# محاولة جلب مفتاح الـ API من إعدادات Secrets بأمان
+# جلب مفتاح OpenAI API بأمان
 api_key = None
 try:
   if "OPENAI_API_KEY" in st.secrets:
@@ -61,7 +56,7 @@ try:
 except Exception:
   pass
 
-# العنوان الهيكلي والهوية البصرية للمنصة
+# العنوان والهوية البصرية للمنصة
 st.title("⚖️ منصة ميثاق للتدقيق القانوني والامتثال (PDPL)")
 st.markdown(
     "**محرك الذكاء الاصطناعي المتقدم لفحص سياسات الخصوصية والامتثال التنظيمي"
@@ -69,7 +64,7 @@ st.markdown(
 )
 st.markdown("---")
 
-# صندوق إدخال النص القانوني أو سياسة الخصوصية
+# صندوق إدخال النص القانوني
 st.markdown("### 📄 إدخال وثيقة السياسة المراد فحصها:")
 policy_text = st.text_area(
     "الصق نص سياسة الخصوصية أو بنود الاستخدام هنا:",
@@ -80,14 +75,14 @@ policy_text = st.text_area(
     ),
 )
 
-# زر بدء الفحص
+# زر الفحص
 if st.button("🚀 بدء التدقيق والتحليل الذكي الفوري"):
   if not policy_text.strip():
     st.warning("الرجاء إدخال نص السياسة القانونية أولاً ليتمكن المحرك من فحصها.")
   elif not api_key:
     st.error(
-        "تنبيه: مفتاح الغير مفعل في Secrets أو الصيغة غير صحيحة. يرجى مراجعة"
-        " إعدادات المفتاح."
+        "تنبيه: مفتاح الـ API غير مفعل في Secrets أو الصيغة غير صحيحة. يرجى"
+        " مراجعة إعدادات المفتاح."
     )
   else:
     with st.spinner(
@@ -95,7 +90,6 @@ if st.button("🚀 بدء التدقيق والتحليل الذكي الفور�
         " (PDPL)..."
     ):
       try:
-        # الاتصال بمحرك OpenAI الحقيقي (GPT-4o)
         client = OpenAI(api_key=api_key)
 
         response = client.chat.completions.create(
@@ -117,7 +111,6 @@ if st.button("🚀 بدء التدقيق والتحليل الذكي الفور�
 
         audit_report = response.choices[0].message.content
 
-        # عرض التقرير القانوني الاحترافي
         st.success("تم الانتهاء من التدقيق القانوني بنجاح!")
         st.markdown("### 📊 تقرير الامتثال القانوني الصادر:")
         st.markdown(audit_report)
@@ -127,10 +120,9 @@ if st.button("🚀 بدء التدقيق والتحليل الذكي الفور�
             f"حدث خطأ أثناء الاتصال بمحرك الذكاء الاصطناعي الحقيقي: {str(e)}"
         )
 
-# تذييل الصفحة الرسمي للجنة التحكيم
 st.markdown("---")
 st.markdown(
-    "<p style='text-align: center; color: #64748b; font-size: 0.9rem;'>منصة"
+    "<p style='text-align: center; color: #94a3b8; font-size: 0.9rem;'>منصة"
     " ميثاق القانونية © 2026 - جميع الحقوق محفوظة لعرض مشروع الامتثال"
     " الذكي</p>",
     unsafe_allow_html=True,
